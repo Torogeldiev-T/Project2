@@ -2,22 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class collectableController : MonoBehaviour
 {
     public Text score;
     int currentScore = 0;
     public GameObject obj;
     public GameObject prefap;
+    public AudioClip coinSound;
+    private AudioSource audioSource;
+    public int lastSceneIndex = 1;  
+    
     void Start()
     {
-         score.text = currentScore.ToString();
+        audioSource = GetComponent<AudioSource>();
+        score.text = currentScore.ToString();
     }
 
     void OnCollisionEnter(Collision collision) {
         GameObject gameObject = collision.gameObject;
         if(gameObject.CompareTag("Player")){
             Destroy(obj);
+            audioSource = GetComponent<AudioSource>();
+             if(audioSource != null){
+                audioSource.enabled = true;
+                if(!audioSource.isPlaying)
+                    audioSource.PlayOneShot(coinSound);
+            }
             currentScore = int.Parse(score.text);
             currentScore++;
             float x = Random.Range(-3,3f);
@@ -25,12 +36,23 @@ public class collectableController : MonoBehaviour
             float z = Random.Range(-3f,3f);
             Instantiate(prefap,new Vector3(x,y,z),Quaternion.Euler(0.0f, 5f, 133f));
             score.text = currentScore.ToString();
+            if(currentScore == 10){
+                lastSceneIndex = SceneManager.GetActiveScene().buildIndex;
+                SceneManager.LoadScene(5);
+            }
         }
                 
     }
+     void PlayAudio()
+     {
+         audioSource.enabled = true;
+         if (!audioSource.isPlaying)
+         {
+             audioSource.Play();
+         }
+     }
 
     void Update()
     {
-        
     }
 }

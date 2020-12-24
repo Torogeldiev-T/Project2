@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
-
+using UnityEngine.SceneManagement;
 public enum EnemyState
 {
     Patrolling,
@@ -124,4 +124,12 @@ public class EnemyController : MonoBehaviour
             }
         }
     }
-}
+    void OnCollisionEnter(Collision collision) {
+        GameObject gameObject = collision.gameObject;
+        if(gameObject.CompareTag("Player")){
+                SceneManager.LoadScene(4);
+            }
+        }
+                
+    }
+
